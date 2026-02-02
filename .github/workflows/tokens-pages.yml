@@ -207,6 +207,15 @@ jobs:
               body.dark-theme .typography-sample {
                 background: var(--color-surface-dark-surface, #1C1C1E);
               }
+              
+              .subtitle {
+                font-size: var(--font-size-lg, 20px);
+                color: var(--color-text-light-secondary, #666666);
+              }
+              
+              body.dark-theme .subtitle {
+                color: var(--color-text-dark-secondary, #AAAAAA);
+              }
             </style>
           </head>
           <body>
@@ -217,7 +226,7 @@ jobs:
             <div class="container">
               <header>
                 <h1>🌌 Galaxy One UI Kit</h1>
-                <p style="font-size: var(--font-size-lg, 20px); color: var(--color-text-light-secondary, #666666);">
+                <p class="subtitle">
                   Design Tokens Demo
                 </p>
               </header>
@@ -352,7 +361,13 @@ jobs:
                 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                 
                 if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-                  toggleTheme();
+                  const body = document.body;
+                  const themeCSS = document.getElementById('theme-css');
+                  const toggleButton = document.querySelector('.theme-toggle');
+                  
+                  body.classList.add('dark-theme');
+                  themeCSS.href = 'tokens.dark.css';
+                  toggleButton.textContent = '☀️ Toggle Theme';
                 }
               });
             </script>
