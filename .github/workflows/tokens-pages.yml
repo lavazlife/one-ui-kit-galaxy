@@ -1,0 +1,388 @@
+name: Build Tokens and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Style Dictionary
+        run: npm install -g style-dictionary
+
+      - name: Build light theme CSS
+        run: style-dictionary build --config config.light.js
+
+      - name: Build dark theme CSS
+        run: style-dictionary build --config config.dark.js
+
+      - name: Create demo HTML
+        run: |
+          cat > site/index.html << 'HTML'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Galaxy One UI Kit - Design Tokens Demo</title>
+            <link id="theme-css" rel="stylesheet" href="tokens.light.css">
+            <style>
+              * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+              }
+              
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                background-color: var(--color-surface-light-background, #FFFFFF);
+                color: var(--color-text-light-primary, #000000);
+                padding: 2rem;
+                transition: background-color 0.3s ease, color 0.3s ease;
+              }
+              
+              body.dark-theme {
+                background-color: var(--color-surface-dark-background, #000000);
+                color: var(--color-text-dark-primary, #FFFFFF);
+              }
+              
+              .container {
+                max-width: 1200px;
+                margin: 0 auto;
+              }
+              
+              header {
+                margin-bottom: 3rem;
+                text-align: center;
+              }
+              
+              h1 {
+                font-size: var(--font-size-xxl, 32px);
+                font-weight: var(--font-weight-bold, 700);
+                margin-bottom: 1rem;
+                color: var(--color-primary-base, #1B5EFF);
+              }
+              
+              .theme-toggle {
+                position: fixed;
+                top: 2rem;
+                right: 2rem;
+                background: var(--color-primary-base, #1B5EFF);
+                color: white;
+                border: none;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: var(--font-size-md, 16px);
+                font-weight: var(--font-weight-semibold, 600);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+              }
+              
+              .theme-toggle:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+              }
+              
+              .theme-toggle:active {
+                transform: translateY(0);
+              }
+              
+              .section {
+                margin-bottom: 3rem;
+              }
+              
+              .section-title {
+                font-size: var(--font-size-xl, 24px);
+                font-weight: var(--font-weight-semibold, 600);
+                margin-bottom: 1.5rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid var(--color-primary-base, #1B5EFF);
+              }
+              
+              .swatch-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1.5rem;
+              }
+              
+              .swatch {
+                background: var(--color-surface-light-surface, #F5F5F5);
+                border-radius: 12px;
+                padding: 1rem;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+              }
+              
+              body.dark-theme .swatch {
+                background: var(--color-surface-dark-surface, #1C1C1E);
+              }
+              
+              .swatch:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+              }
+              
+              .swatch-color {
+                width: 100%;
+                height: 80px;
+                border-radius: 8px;
+                margin-bottom: 0.75rem;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+              }
+              
+              body.dark-theme .swatch-color {
+                border-color: rgba(255, 255, 255, 0.1);
+              }
+              
+              .swatch-name {
+                font-size: var(--font-size-sm, 14px);
+                font-weight: var(--font-weight-semibold, 600);
+                margin-bottom: 0.25rem;
+              }
+              
+              .swatch-value {
+                font-size: var(--font-size-xs, 12px);
+                color: var(--color-text-light-secondary, #666666);
+                font-family: 'Courier New', monospace;
+              }
+              
+              body.dark-theme .swatch-value {
+                color: var(--color-text-dark-secondary, #AAAAAA);
+              }
+              
+              .spacing-demo {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                align-items: flex-end;
+              }
+              
+              .spacing-box {
+                background: var(--color-primary-base, #1B5EFF);
+                border-radius: 4px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: var(--font-size-xs, 12px);
+                font-weight: var(--font-weight-semibold, 600);
+              }
+              
+              .typography-demo {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+              }
+              
+              .typography-sample {
+                padding: 1rem;
+                background: var(--color-surface-light-surface, #F5F5F5);
+                border-radius: 8px;
+              }
+              
+              body.dark-theme .typography-sample {
+                background: var(--color-surface-dark-surface, #1C1C1E);
+              }
+              
+              .subtitle {
+                font-size: var(--font-size-lg, 20px);
+                color: var(--color-text-light-secondary, #666666);
+              }
+              
+              body.dark-theme .subtitle {
+                color: var(--color-text-dark-secondary, #AAAAAA);
+              }
+            </style>
+          </head>
+          <body>
+            <button class="theme-toggle" onclick="toggleTheme()">
+              🌙 Toggle Theme
+            </button>
+            
+            <div class="container">
+              <header>
+                <h1>🌌 Galaxy One UI Kit</h1>
+                <p class="subtitle">
+                  Design Tokens Demo
+                </p>
+              </header>
+              
+              <div class="section">
+                <h2 class="section-title">Primary Colors</h2>
+                <div class="swatch-grid">
+                  <div class="swatch">
+                    <div class="swatch-color" style="background: var(--color-primary-base);"></div>
+                    <div class="swatch-name">Primary Base</div>
+                    <div class="swatch-value">#1B5EFF</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background: var(--color-primary-light);"></div>
+                    <div class="swatch-name">Primary Light</div>
+                    <div class="swatch-value">#5A8FFF</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background: var(--color-primary-dark);"></div>
+                    <div class="swatch-name">Primary Dark</div>
+                    <div class="swatch-value">#0041C2</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="section">
+                <h2 class="section-title">Secondary Colors</h2>
+                <div class="swatch-grid">
+                  <div class="swatch">
+                    <div class="swatch-color" style="background: var(--color-secondary-base);"></div>
+                    <div class="swatch-name">Secondary Base</div>
+                    <div class="swatch-value">#7B61FF</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background: var(--color-secondary-light);"></div>
+                    <div class="swatch-name">Secondary Light</div>
+                    <div class="swatch-value">#A996FF</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background: var(--color-secondary-dark);"></div>
+                    <div class="swatch-name">Secondary Dark</div>
+                    <div class="swatch-value">#5238CC</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="section">
+                <h2 class="section-title">Semantic Colors</h2>
+                <div class="swatch-grid">
+                  <div class="swatch">
+                    <div class="swatch-color" style="background: var(--color-success);"></div>
+                    <div class="swatch-name">Success</div>
+                    <div class="swatch-value">#4CAF50</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background: var(--color-warning);"></div>
+                    <div class="swatch-name">Warning</div>
+                    <div class="swatch-value">#FF9800</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background: var(--color-error);"></div>
+                    <div class="swatch-name">Error</div>
+                    <div class="swatch-value">#F44336</div>
+                  </div>
+                  <div class="swatch">
+                    <div class="swatch-color" style="background: var(--color-info);"></div>
+                    <div class="swatch-name">Info</div>
+                    <div class="swatch-value">#2196F3</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="section">
+                <h2 class="section-title">Spacing Scale</h2>
+                <div class="spacing-demo">
+                  <div class="spacing-box" style="width: var(--spacing-xs); height: var(--spacing-xs);">XS</div>
+                  <div class="spacing-box" style="width: var(--spacing-sm); height: var(--spacing-sm);">SM</div>
+                  <div class="spacing-box" style="width: var(--spacing-md); height: var(--spacing-md);">MD</div>
+                  <div class="spacing-box" style="width: var(--spacing-lg); height: var(--spacing-lg);">LG</div>
+                  <div class="spacing-box" style="width: var(--spacing-xl); height: var(--spacing-xl);">XL</div>
+                  <div class="spacing-box" style="width: var(--spacing-xxl); height: var(--spacing-xxl);">XXL</div>
+                </div>
+              </div>
+              
+              <div class="section">
+                <h2 class="section-title">Typography Scale</h2>
+                <div class="typography-demo">
+                  <div class="typography-sample" style="font-size: var(--font-size-xs);">
+                    Extra Small (12px) - The quick brown fox jumps over the lazy dog
+                  </div>
+                  <div class="typography-sample" style="font-size: var(--font-size-sm);">
+                    Small (14px) - The quick brown fox jumps over the lazy dog
+                  </div>
+                  <div class="typography-sample" style="font-size: var(--font-size-md);">
+                    Medium (16px) - The quick brown fox jumps over the lazy dog
+                  </div>
+                  <div class="typography-sample" style="font-size: var(--font-size-lg);">
+                    Large (20px) - The quick brown fox jumps over the lazy dog
+                  </div>
+                  <div class="typography-sample" style="font-size: var(--font-size-xl);">
+                    Extra Large (24px) - The quick brown fox jumps over the lazy dog
+                  </div>
+                  <div class="typography-sample" style="font-size: var(--font-size-xxl);">
+                    2X Large (32px) - The quick brown fox jumps over the lazy dog
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <script>
+              function toggleTheme() {
+                const body = document.body;
+                const themeCSS = document.getElementById('theme-css');
+                const toggleButton = document.querySelector('.theme-toggle');
+                
+                if (body.classList.contains('dark-theme')) {
+                  body.classList.remove('dark-theme');
+                  themeCSS.href = 'tokens.light.css';
+                  toggleButton.textContent = '🌙 Toggle Theme';
+                  localStorage.setItem('theme', 'light');
+                } else {
+                  body.classList.add('dark-theme');
+                  themeCSS.href = 'tokens.dark.css';
+                  toggleButton.textContent = '☀️ Toggle Theme';
+                  localStorage.setItem('theme', 'dark');
+                }
+              }
+              
+              // Load saved theme preference
+              window.addEventListener('DOMContentLoaded', () => {
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                
+                if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                  const body = document.body;
+                  const themeCSS = document.getElementById('theme-css');
+                  const toggleButton = document.querySelector('.theme-toggle');
+                  
+                  body.classList.add('dark-theme');
+                  themeCSS.href = 'tokens.dark.css';
+                  toggleButton.textContent = '☀️ Toggle Theme';
+                }
+              });
+            </script>
+          </body>
+          </html>
+          HTML
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
