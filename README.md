@@ -1,248 +1,189 @@
-# 🌌 Galaxy One UI Kit
+# One UI Kit Galaxy 🌌
 
-<div align="center">
-
-**A comprehensive design system inspired by Samsung's Galaxy One UI**
-
-*Modern, accessible, and ready for production*
+> A comprehensive UI kit implementing Samsung's Galaxy One UI (8 / 8.5 / 9) design language with design tokens, components, layouts, and semantic themes for light and dark modes.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](CHANGELOG.md)
-[![One UI](https://img.shields.io/badge/One%20UI-8%20%7C%208.5%20%7C%209-purple.svg)](https://developer.samsung.com/one-ui)
+[![Style Dictionary](https://img.shields.io/badge/Style%20Dictionary-enabled-brightgreen.svg)](https://amzn.github.io/style-dictionary/)
 
-</div>
+## Overview
 
----
+One UI Kit Galaxy provides a complete design system based on Samsung's One UI principles, optimized for modern mobile and web experiences. Built with accessibility, consistency, and developer experience in mind.
 
-## 📖 Overview
+### Key Features
 
-**Galaxy One UI Kit** is a production-ready design system that brings Samsung's Galaxy One UI design language to your projects. This kit provides a complete set of UI components, design tokens, layouts, and semantic themes compatible with One UI versions 8, 8.5, and 9.
+- 🎨 **Design Tokens**: Semantic tokens for colors, spacing, typography, and more
+- 🌓 **Light & Dark Themes**: Full support for both light and dark modes
+- ♿ **Accessibility First**: WCAG 2.1 AA compliant components
+- 📱 **Mobile Optimized**: One-handed use and thumb-friendly design
+- 🔧 **Style Dictionary**: Automated token transformation to CSS variables
+- 📦 **Modular Architecture**: Use only what you need
 
-Built with accessibility, consistency, and developer experience in mind, this kit enables teams to rapidly build beautiful, user-friendly interfaces that follow Samsung's design principles.
+## Design Tokens
 
-### 🎯 Key Principles
+Design tokens are the foundation of the design system, providing a single source of truth for design decisions.
 
-- **One-handed friendly**: Optimized for comfortable one-handed use
-- **Content first**: Focus on what matters most to users
-- **Consistent & familiar**: Follows established One UI patterns
-- **Accessible by default**: WCAG 2.1 AA compliant components
-- **Dark mode ready**: Full support for light and dark themes
+### Token Categories
 
----
+#### Global Tokens (`tokens.global.json`)
+Theme-agnostic values used across all themes:
 
-## ✨ Features
+- **Spacing**: 8px base grid system (xs: 4px → xxl: 48px)
+- **Typography**: Font families, sizes (12px-36px), weights, line heights
+- **Border Radius**: From subtle (4px) to full rounded (9999px)
+- **Shadows**: Five elevation levels for depth
 
-### 🎨 Design Tokens
-- **Color System**: Complete palette including primary, secondary, and semantic colors
-- **Typography Scale**: Responsive type system with clear hierarchy
-- **Spacing**: Consistent spacing scale (4px base unit)
-- **Border Radius**: Rounded corners that match One UI aesthetics
-- **Elevation**: Shadow system for depth and layering
-- **Motion**: Animation curves and durations for smooth transitions
+#### Light Theme (`tokens.light.json`)
+Optimized for daylight viewing:
 
-### 🧩 Component Library
-- **Buttons**: Primary, secondary, text, and icon buttons
-- **Forms**: Input fields, checkboxes, radio buttons, switches
-- **Navigation**: Bottom navigation, tabs, app bars
-- **Cards**: Content cards with various layouts
-- **Lists**: Single-line, multi-line, and interactive lists
-- **Dialogs**: Alerts, confirmations, and custom dialogs
-- **Feedback**: Snackbars, toasts, and loading states
+- Clean white backgrounds (#FFFFFF)
+- High contrast text (#000000)
+- Blue accent (#1976D2)
+- Subtle borders and surfaces
 
-### 📱 Layout System
-- **Grid System**: Flexible responsive grid
-- **Spacing Utilities**: Margin and padding helpers
-- **Breakpoints**: Mobile-first responsive breakpoints
-- **Safe Areas**: Support for notches and curved displays
+#### Dark Theme (`tokens.dark.json`)
+Optimized for OLED displays and low-light environments:
 
-### 🌓 Theming
-- **Light Theme**: Clean and bright default theme
-- **Dark Theme**: AMOLED-optimized dark mode
-- **Custom Themes**: Easy theming with CSS variables
-- **High Contrast**: Enhanced contrast for accessibility
+- True black backgrounds (#000000) for OLED
+- Adjusted text contrast (#FFFFFF, #B4B4B4)
+- Lighter blue accent (#42A5F5)
+- Elevated surfaces with subtle grays
 
----
+### Using Tokens
 
-## 📁 Folder Structure
+After building, tokens are available as CSS custom properties:
+
+```css
+/* Light theme */
+background-color: var(--light-color-background-primary);
+color: var(--light-color-text-primary);
+padding: var(--global-spacing-md);
+
+/* Dark theme */
+background-color: var(--dark-color-background-primary);
+color: var(--dark-color-text-primary);
+```
+
+## Usage
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/lavazlife/one-ui-kit-galaxy.git
+cd one-ui-kit-galaxy
+
+# Install dependencies
+npm install
+
+# Build design tokens
+npm run build:tokens
+```
+
+### Building Tokens
+
+Design tokens are processed using Style Dictionary to generate CSS variables:
+
+```bash
+npm run build:tokens
+```
+
+This generates:
+- `build/css/variables-light.css` - Light theme CSS variables
+- `build/css/variables-dark.css` - Dark theme CSS variables
+
+### Project Structure
 
 ```
 one-ui-kit-galaxy/
-├── LICENSE                 # MIT License
-├── README.md              # This file
-├── CHANGELOG.md           # Version history
-├── .gitignore            # Git ignore rules
-│
-├── design-tokens/         # Design system tokens
-│   ├── colors.json       # Color palette definitions
-│   ├── typography.json   # Font scales and styles
-│   ├── spacing.json      # Spacing scale
-│   ├── shadows.json      # Elevation system
-│   └── motion.json       # Animation timings
-│
-├── components/           # UI components
-│   ├── buttons/         # Button components
-│   ├── forms/           # Form elements
-│   ├── navigation/      # Navigation components
-│   ├── cards/           # Card layouts
-│   ├── lists/           # List components
-│   └── dialogs/         # Dialog components
-│
-├── layouts/              # Layout templates
-│   ├── grids/           # Grid systems
-│   ├── containers/      # Container components
-│   └── spacing/         # Spacing utilities
-│
-├── themes/               # Theme definitions
-│   ├── light.json       # Light theme
-│   ├── dark.json        # Dark theme
-│   └── high-contrast.json # High contrast theme
-│
-├── assets/               # Design assets
-│   ├── icons/           # Icon library
-│   ├── illustrations/   # Illustrations
-│   └── images/          # Sample images
-│
-├── figma/                # Figma resources
-│   └── one-ui-kit.fig   # Figma design file
-│
-└── docs/                 # Documentation
-    ├── getting-started.md
-    ├── design-tokens.md
-    ├── components.md
-    ├── accessibility.md
-    └── contributing.md
+├── tokens/                    # Design tokens (JSON)
+│   ├── tokens.global.json    # Global/theme-agnostic tokens
+│   ├── tokens.light.json     # Light theme tokens
+│   └── tokens.dark.json      # Dark theme tokens
+├── components/                # UI components
+│   ├── buttons/              # Button components
+│   ├── inputs/               # Input components
+│   ├── navigation/           # Navigation components
+│   ├── surfaces/             # Surface components (cards, etc.)
+│   └── system/               # System components
+├── layouts/                   # Layout templates
+│   ├── templates/            # Reusable layout templates
+│   └── examples/             # Example implementations
+├── assets/                    # Static assets
+│   ├── icons/                # Icon set
+│   ├── previews/             # Component previews
+│   └── device-frames/        # Device mockup frames
+├── source-files/             # Design source files
+├── docs/                      # Documentation
+│   ├── guidelines.md         # Design guidelines
+│   ├── accessibility.md      # Accessibility guidelines
+│   └── contribution.md       # Contribution guide
+└── build/                     # Generated files (after build)
+    └── css/                  # CSS variable files
 ```
 
----
+### Integration Example
 
-## 🚀 Usage
-
-### For Designers (Figma)
-
-1. **Import the Design File**
-   - Open the `figma/one-ui-kit.fig` file in Figma
-   - Or duplicate from [Figma Community](#) (link coming soon)
-
-2. **Access Components**
-   - Find all components in the Assets panel
-   - Use the component library for consistent designs
-   - Swap instances to explore variants
-
-3. **Apply Design Tokens**
-   - Use defined color styles for consistency
-   - Apply text styles from the typography system
-   - Use auto-layout with spacing tokens
-
-4. **Enable Plugins**
-   - Use "Design Tokens" plugin to export tokens
-   - "A11y - Color Contrast Checker" for accessibility testing
-
-### For Developers (Code)
-
-#### Installation
-
-```bash
-# npm
-npm install one-ui-kit-galaxy
-
-# yarn
-yarn add one-ui-kit-galaxy
-
-# pnpm
-pnpm add one-ui-kit-galaxy
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One UI Kit Example</title>
+    
+    <!-- Light theme (default) -->
+    <link rel="stylesheet" href="build/css/variables-light.css">
+    
+    <!-- Dark theme (media query or manual toggle) -->
+    <link rel="stylesheet" href="build/css/variables-dark.css" 
+          media="(prefers-color-scheme: dark)">
+</head>
+<body>
+    <div style="
+        background-color: var(--light-color-background-primary);
+        color: var(--light-color-text-primary);
+        padding: var(--global-spacing-md);
+    ">
+        <h1>One UI Kit Galaxy</h1>
+        <button style="
+            background-color: var(--light-color-action-primary-default);
+            color: var(--light-color-text-inverse);
+            padding: var(--global-spacing-sm) var(--global-spacing-md);
+            border-radius: var(--global-borderRadius-md);
+            border: none;
+            font-size: var(--global-typography-fontSize-base);
+        ">
+            Primary Action
+        </button>
+    </div>
+</body>
+</html>
 ```
 
-#### Import Design Tokens
+## Accessibility
 
-```javascript
-// Import all tokens
-import tokens from 'one-ui-kit-galaxy/design-tokens';
+This UI kit prioritizes accessibility to ensure inclusive experiences for all users.
 
-// Or import specific tokens
-import colors from 'one-ui-kit-galaxy/design-tokens/colors.json';
-import typography from 'one-ui-kit-galaxy/design-tokens/typography.json';
-```
+### Key Features
 
-#### Use Components (React Example)
+- ✅ **WCAG 2.1 Level AA** compliant color contrast ratios
+- ✅ **Keyboard navigation** support with visible focus indicators
+- ✅ **Screen reader** compatible with proper ARIA labels
+- ✅ **Touch targets** minimum 48x48px for mobile usability
+- ✅ **Reduced motion** support via `prefers-reduced-motion`
+- ✅ **Scalable text** using relative units (rem/em)
 
-```jsx
-import { Button, Card, TextField } from 'one-ui-kit-galaxy';
+For detailed accessibility guidelines, see [docs/accessibility.md](./docs/accessibility.md).
 
-function MyComponent() {
-  return (
-    <Card>
-      <TextField label="Email" type="email" />
-      <Button variant="primary" size="large">
-        Sign In
-      </Button>
-    </Card>
-  );
-}
-```
+## Documentation
 
-#### Apply Themes
+- **[Design Guidelines](./docs/guidelines.md)**: Design principles, visual language, and component guidelines
+- **[Accessibility](./docs/accessibility.md)**: Accessibility standards, testing, and best practices
+- **[Contributing](./docs/contribution.md)**: How to contribute to this project
 
-```javascript
-import { ThemeProvider } from 'one-ui-kit-galaxy';
-import { darkTheme } from 'one-ui-kit-galaxy/themes';
+## License
 
-function App() {
-  return (
-    <ThemeProvider theme={darkTheme}>
-      <YourApp />
-    </ThemeProvider>
-  );
-}
-```
-
-#### CSS Variables
-
-```css
-/* Use design tokens in your CSS */
-.custom-button {
-  background-color: var(--color-primary);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-lg);
-  font-size: var(--font-size-md);
-}
-```
-
----
-
-## ♿ Accessibility
-
-Galaxy One UI Kit is built with accessibility as a core requirement, not an afterthought.
-
-### Compliance
-- **WCAG 2.1 Level AA** compliant
-- **Section 508** compatible
-- **ARIA** attributes included in all interactive components
-
-### Features
-- ✅ **Color Contrast**: All color combinations meet 4.5:1 ratio
-- ✅ **Keyboard Navigation**: Full keyboard support for all components
-- ✅ **Screen Readers**: Semantic HTML and ARIA labels
-- ✅ **Focus Indicators**: Clear, visible focus states
-- ✅ **Touch Targets**: Minimum 44x44px for all interactive elements
-- ✅ **Motion**: Respects `prefers-reduced-motion` settings
-- ✅ **Responsive Text**: Supports up to 200% zoom without breaking
-
-### Testing
-- Use automated tools like axe DevTools or Lighthouse
-- Test with screen readers (NVDA, JAWS, VoiceOver)
-- Verify keyboard navigation paths
-- Check color contrast in both themes
-
-### Resources
-- [Accessibility Guidelines](docs/accessibility.md)
-- [WCAG 2.1 Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/)
-- [Samsung Accessibility](https://www.samsung.com/us/accessibility/)
-
----
-
-## 📜 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
 ```
 MIT License
