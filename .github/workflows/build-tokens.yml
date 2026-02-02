@@ -1,0 +1,90 @@
+name: Build Design Tokens
+
+on:
+  push:
+    branches:
+      - main
+      - 'copilot/**'
+    paths:
+      - 'tokens/**'
+      - 'config.json'
+      - 'package.json'
+      - '.github/workflows/build-tokens.yml'
+  pull_request:
+    paths:
+      - 'tokens/**'
+      - 'config.json'
+      - 'package.json'
+  workflow_dispatch:
+
+jobs:
+  build-tokens:
+    name: Build CSS Variables from Design Tokens
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build design tokens
+        run: npm run build:tokens
+      
+      - name: List generated files
+        run: |
+          echo "Generated CSS variable files:"
+          ls -lh build/css/
+          echo ""
+          echo "Light theme preview (first 20 lines):"
+          head -n 20 build/css/variables-light.css
+          echo ""
+          echo "Dark theme preview (first 20 lines):"
+          head -n 20 build/css/variables-dark.css
+      
+      - name: Upload light theme CSS
+        uses: actions/upload-artifact@v4
+        with:
+          name: css-variables-light
+          path: build/css/variables-light.css
+          retention-days: 90
+      
+      - name: Upload dark theme CSS
+        uses: actions/upload-artifact@v4
+        with:
+          name: css-variables-dark
+          path: build/css/variables-dark.css
+          retention-days: 90
+      
+      - name: Upload all CSS variables
+        uses: actions/upload-artifact@v4
+        with:
+          name: css-variables-all
+          path: build/css/
+          retention-days: 90
+      
+      - name: Build summary
+        run: |
+          echo "## ✅ Design Tokens Build Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Generated Files" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- 🌞 **Light Theme**: \`build/css/variables-light.css\`" >> $GITHUB_STEP_SUMMARY
+          echo "- 🌙 **Dark Theme**: \`build/css/variables-dark.css\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "CSS variable files have been uploaded as workflow artifacts and are available for download." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### File Sizes" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          ls -lh build/css/ >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
