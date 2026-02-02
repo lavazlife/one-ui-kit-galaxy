@@ -1,0 +1,33 @@
+{
+  "name": "one-ui-kit-galaxy",
+  "version": "0.1.0",
+  "description": "Galaxy One UI (8 / 8.5 / 9) — UI kit, design tokens, components, layouts, and semantic themes",
+  "main": "index.js",
+  "scripts": {
+    "build:tokens": "style-dictionary build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lavazlife/one-ui-kit-galaxy.git"
+  },
+  "keywords": [
+    "design-tokens",
+    "ui-kit",
+    "one-ui",
+    "samsung",
+    "galaxy",
+    "design-system",
+    "style-dictionary",
+    "dark-mode",
+    "accessibility"
+  ],
+  "author": "lavazlife",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lavazlife/one-ui-kit-galaxy/issues"
+  },
+  "homepage": "https://github.com/lavazlife/one-ui-kit-galaxy#readme",
+  "devDependencies": {
+    "style-dictionary": "^3.9.0"
+  }
+}
